@@ -25,14 +25,15 @@ main = do
 interactive :: Board -> IO Board
 interactive b = do 
   putStr "Enter index: "
-  
+  hFlush stdout
+
   c <- getChar
   l <- getLine -- chew up any reamining character
 
   case c of 
     i | i == 'q' -> exitSuccess
       | i == '?' -> (putStr help) >> return b
-      | (\d -> d `elem` ['0'..'9']) i -> do
+      | (\d -> d `elem` ['1'..'9']) i -> do
           -- todo: stepgame using input 
           putStr $ renderBoard b 
           return b
@@ -41,21 +42,21 @@ interactive b = do
 renderBoard :: Board -> String
 renderBoard b = 
     " **Board State**\n\n" ++
-    "  " ++ (renderPosition $ topLeft b) ++ "  |" ++
-    "  " ++ (renderPosition $ topCenter b) ++ "  |" ++
-    "  " ++ (renderPosition $ topRight b) ++
+    "  " ++ (renderPosition $ b !! 0) ++ "  |" ++
+    "  " ++ (renderPosition $ b !! 1) ++ "  |" ++
+    "  " ++ (renderPosition $ b !! 2) ++
     "\n_____|_____|_____\n" ++
-    "  " ++ (renderPosition $ middleLeft b) ++ "  |" ++
-    "  " ++ (renderPosition $ middleCenter b) ++ "  |" ++
-    "  " ++ (renderPosition $ middleRight b) ++
+    "  " ++ (renderPosition $ b !! 3) ++ "  |" ++
+    "  " ++ (renderPosition $ b !! 4) ++ "  |" ++
+    "  " ++ (renderPosition $ b !! 5) ++
     "\n_____|_____|_____\n" ++
-    "  " ++ (renderPosition $ bottomLeft b) ++ "  |" ++
-    "  " ++ (renderPosition $ bottomCenter b) ++ "  |" ++
-    "  " ++ (renderPosition $ bottomRight b) ++ 
+    "  " ++ (renderPosition $ b !! 6) ++ "  |" ++
+    "  " ++ (renderPosition $ b !! 7) ++ "  |" ++
+    "  " ++ (renderPosition $ b !! 8) ++ 
     "\n     |     |     \n\n"
   where
-    renderPosition p = 
-      case p of
+    renderPosition c = 
+      case c of
         X     -> "X"
         O     -> "O"
         Empty -> " "
