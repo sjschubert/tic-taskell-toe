@@ -18,4 +18,5 @@ Executable ttt
     -fno-spec-constr-count 
     -optl-Wl,--enable-stdcall-fixup
   build-depends:
-    base >= 4
+    base >= 4,
+    split
