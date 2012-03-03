@@ -42,21 +42,21 @@ interactive gs = do
    
       l <- getLine
       let c = maybeRead l
-    
+  
       case c of  
-        Just i | i == '?' -> (putStr help) >> return gs
-               | (\d -> d `elem` ['1'..'9']) i -> do
+        Just i  | (\d -> d `elem` [1..9]) i -> do
                     -- todo: stepgame using input 
                     putStrLn $ renderPrettyBoard $ board gs
                     return gs
-               | otherwise -> (putStrLn "Invalid choice!\n") >> return gs
-        Nothing -> (putStrLn "Invalid blah!\n") >> return gs
+                | otherwise -> (putStrLn "Invalid choice!\n") >> return gs
+        Nothing -> if l == "q" 
+                    then (putStrLn help) >> return gs 
+                    else (putStrLn "Invalid choice!\n") >> return gs
     
 initGame :: IO GameState
 initGame = do 
   putStrLn "What game configuration would you like?"
-  putStrLn "First Player is X, second Player is O..."
-  putStrLn "  1) Player vs. Player"
+  putStrLn "  1) Player(X) vs. Player(O)"
   putStrLn "  2) Player vs. AI"
   putStrLn "  3) AI vs. Player"
   

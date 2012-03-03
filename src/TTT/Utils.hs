@@ -11,13 +11,13 @@ where
 import Data.Char
 import Data.List
 import Data.List.Split
+import Data.Maybe
 
 import TTT.Game
 
 help :: String
 help = "Try to get three X's or O's in a row horizontally, vertically, or diagonally.\n" ++
        " -type the desired index when prompted to play to the corresponding tile\n" ++
-       " -type '?' to print this message\n" ++
        " -type 'ctrl + c' to quit\n\n" ++
        "   **Indexes**\n\n" ++
        "  1  |" ++ "  2  |" ++"  3" ++
@@ -32,6 +32,9 @@ maybeRead :: Read a => String -> Maybe a
 maybeRead s = case reads s of
   [(x, "")] -> Just x
   _         -> Nothing
+
+--maybeRead :: Read a => String -> Maybe a
+--maybeRead = fmap fst . listToMaybe . filter (null . dropWhile isSpace . snd) . reads
 
 renderBoard :: Board -> String
 renderBoard b = 
