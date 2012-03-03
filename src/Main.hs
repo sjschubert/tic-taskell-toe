@@ -8,23 +8,29 @@ import System.Exit
 import System.IO
 
 import TTT.Game
+import TTT.Utils
 
 main :: IO ()
 main = do
 
+  --render banner
   putStr "-----------------"
   putStrLn "\n Tic Taskell Toe \n"
   putStrLn help
 
-  loop initBoard
+  gs <- initGame  
+
+  putStrLn $ "\n **Board State**\n\n" ++ renderBoard (board gs) ++ "\n"
+  
+  loop gs
 
   where 
-    loop b = do
-        s <- interactive b
+    loop a = do
+        s <- interactive a
         loop s
 
-interactive :: Board -> IO Board
-interactive b = do 
+interactive :: GameState -> IO GameState
+interactive gs = do 
   putStr "Enter index: "
   hFlush stdout
 
@@ -33,33 +39,34 @@ interactive b = do
 
   case c of 
     i | i == 'q' -> exitSuccess
-      | i == '?' -> (putStr help) >> return b
+      | i == '?' -> (putStr help) >> return gs
       | (\d -> d `elem` ['1'..'9']) i -> do
           -- todo: stepgame using input 
-          putStrLn $ "\n **Board State**\n\n" ++ renderBoard b ++ "\n"
-          return b
-      | otherwise -> (putStrLn "Invalid choice! Type '?' for help...") >> return b
+          putStrLn $ "\n **Board State**\n\n" ++ renderBoard (board gs) ++ "\n"
+          return gs
+      | otherwise -> (putStrLn "Invalid choice! Type '?' for help...") >> return gs
   
-renderBoard :: Board -> String
-renderBoard b = 
-    intercalate "\n_____|_____|_____\n" $ 
-             map (intercalate "|") $
-             splitEvery 3 $ 
-             map (\x -> "  " ++ (renderTile x) ++ "  ") b
     
+initGame :: IO GameState
+initGame = do 
+  putStrLn "What game configuration would you like?"
+  putStrLn "First Player is X, second Player is O..."
+  putStrLn "  1) Player vs. Player"
+  putStrLn "  2) Player vs. AI"
+  putStrLn "  3) AI vs. Player"
+  
+  putStr "Enter choice: "
+  hFlush stdout
 
-renderTile :: TileContents -> String
-renderTile c = 
-  case c of
-    X     -> "X"
-    O     -> "O"
-    Empty -> "-"
+  c <- getLine 
+  let a = maybeRead c
+
+  case a of 
+    Just 1  -> return (GameState initBoard (Player False) (Player False))
+    Just 2  -> return (GameState initBoard (Player False) (Player True))
+    Just 3  -> return (GameState initBoard (Player True) (Player False))
+    Nothing -> do
+      putStrLn "Invalid choice!"
+      initGame
     
-help :: String
-help = "   **Indexes**\n\n" ++
-    "  1  |" ++ "  2  |" ++"  3" ++
-    "\n_____|_____|_____\n" ++
-    "  4  |" ++ "  5  |" ++"  6" ++
-    "\n_____|_____|_____\n" ++
-    "  7  |" ++ "  8  |" ++"  9" ++
-    "\n     |     |     \n" 
+  
