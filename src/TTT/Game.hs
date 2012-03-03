@@ -1,9 +1,10 @@
 module TTT.Game (
   TileContents(..),
-  BoardState(..),
   Board(..),
+  BoardState(..),
   Player(..),
   GameState(..),
+  currentPlayer,
   initBoard,
   stepGame
 ) 
@@ -11,8 +12,10 @@ module TTT.Game (
 where
 
 data TileContents = X | O | Empty
-data BoardState = XWon | OWon | Draw | XTurn | OTurn
+                    deriving (Eq)
+
 type Board = [TileContents] 
+data BoardState = XWin | OWin | Draw
 
 data Player = Player {
   isAI :: Bool
@@ -23,6 +26,15 @@ data GameState = GameState {
   playerOne :: Player,
   playerTwo :: Player  
 }
+
+currentPlayer :: GameState -> Player
+currentPlayer gs = 
+  if (x == o)
+    then playerOne gs
+    else playerTwo gs    
+  where
+    x = foldl (\acc t -> if t == X then (acc + 1) else acc) 0 $ board gs
+    o = foldl (\acc t -> if t == O then (acc + 1) else acc) 0 $ board gs
 
 initBoard:: Board
 initBoard = foldl (\acc t -> Empty : acc) [] [1..9]

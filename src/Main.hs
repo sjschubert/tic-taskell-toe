@@ -7,45 +7,50 @@ import Data.List.Split
 import System.Exit
 import System.IO
 
+import TTT.AI
 import TTT.Game
 import TTT.Utils
 
 main :: IO ()
 main = do
-
-  --render banner
   putStr "-----------------"
   putStrLn "\n Tic Taskell Toe \n"
   putStrLn help
 
   gs <- initGame  
-
-  putStrLn $ "\n **Board State**\n\n" ++ renderBoard (board gs) ++ "\n"
+  putStrLn $ renderPrettyBoard $ board gs
   
   loop gs
 
   where 
     loop a = do
         s <- interactive a
+        --check s for win state, declare winner / draw, or keep looping
         loop s
 
 interactive :: GameState -> IO GameState
 interactive gs = do 
-  putStr "Enter index: "
-  hFlush stdout
-
-  c <- getChar
-  l <- getLine -- chew up any reamining character
-
-  case c of 
-    i | i == 'q' -> exitSuccess
-      | i == '?' -> (putStr help) >> return gs
-      | (\d -> d `elem` ['1'..'9']) i -> do
-          -- todo: stepgame using input 
-          putStrLn $ "\n **Board State**\n\n" ++ renderBoard (board gs) ++ "\n"
-          return gs
-      | otherwise -> (putStrLn "Invalid choice! Type '?' for help...") >> return gs
-  
+  let p = currentPlayer gs
+  if isAI p 
+    then do 
+      let ns = playFor p gs
+      putStrLn $ renderPrettyBoard $ board ns
+      return ns
+    else do
+      putStr "Enter index: "
+      hFlush stdout
+   
+      l <- getLine
+      let c = maybeRead l
+    
+      case c of  
+        Just i | i == '?' -> (putStr help) >> return gs
+               | (\d -> d `elem` ['1'..'9']) i -> do
+                    -- todo: stepgame using input 
+                    putStrLn $ renderPrettyBoard $ board gs
+                    return gs
+               | otherwise -> (putStrLn "Invalid choice!\n") >> return gs
+        Nothing -> (putStrLn "Invalid blah!\n") >> return gs
     
 initGame :: IO GameState
 initGame = do 
@@ -68,5 +73,3 @@ initGame = do
     Nothing -> do
       putStrLn "Invalid choice!"
       initGame
-    
-  
