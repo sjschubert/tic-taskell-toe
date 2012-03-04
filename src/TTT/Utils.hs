@@ -2,6 +2,7 @@ module TTT.Utils (
   help,
   maybeRead,
   renderBoard,
+  renderPlayer,
   renderPrettyBoard,
   renderTile,
   renderWinner
@@ -40,6 +41,9 @@ renderBoard b =
       map (intercalate "|") $
       splitEvery 3 $ 
       map (\x -> "  " ++ (renderTile x) ++ "  ") b
+
+renderPlayer :: Player -> String
+renderPlayer p = "(Player " ++ show (playerId p) ++ ")"
 
 renderPrettyBoard :: Board -> String
 renderPrettyBoard b = "\n **Board State**\n\n" ++ (renderBoard b) ++ "\n"

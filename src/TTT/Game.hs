@@ -19,8 +19,9 @@ data BoardState = XWon | OWon | Draw | Playable deriving (Eq)
 type Board = [Tile] 
 
 data Player = Player {
+  playerId :: Int,
   isAI :: Bool
-} deriving (Eq)
+} deriving (Eq, Show)
 
 data GameState = GameState {
   board :: Board,
@@ -53,7 +54,7 @@ initBoard = foldl (\acc t -> Empty : acc) [] [1..9]
 playTurn :: Player -> GameState -> Int -> Either String GameState
 playTurn p gs i
   | canPlay gs i = Right $ gs {board = updateBoard i (playFor gs p) (board gs)}
-  | otherwise    = Left $ "Tile " ++ (show i) ++ "is not empty"
+  | otherwise    = Left $ "Tile " ++ (show i) ++ " is not empty."
   where   
     playFor gs p
       | p == playerOne gs = X

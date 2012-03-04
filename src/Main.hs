@@ -36,7 +36,7 @@ main = do
             
 interactive :: Player -> GameState -> IO GameState
 interactive p gs = do 
-  putStr "Enter index: "
+  putStr $ "Enter index" ++ (renderPlayer p) ++ ": "
   hFlush stdout
 
   l <- getLine
@@ -44,9 +44,9 @@ interactive p gs = do
 
   case c of  
     Just i 
-      | (\d -> d `elem` [1..9]) i -> do
+      | (\d -> d `elem` [0..8]) i -> do
           either 
-            (\s -> putStrLn s >> return gs)
+            (\s -> putStrLn ("\n" ++ s) >> return gs)
             (\ns -> return ns)
             (playTurn p gs i)  
       | otherwise -> (putStrLn "Invalid choice!\n") >> return gs
@@ -68,9 +68,9 @@ initGame = do
   let a = maybeRead c
 
   case a of 
-    Just 1  -> return (GameState initBoard (Player False) (Player False))
-    Just 2  -> return (GameState initBoard (Player False) (Player True))
-    Just 3  -> return (GameState initBoard (Player True) (Player False))
+    Just 1  -> return (GameState initBoard (Player 1 False) (Player 2 False))
+    Just 2  -> return (GameState initBoard (Player 1 False) (Player 2 True))
+    Just 3  -> return (GameState initBoard (Player 1 True) (Player 2 False))
     Nothing -> do
       putStrLn "Invalid choice!"
       initGame
