@@ -4,18 +4,17 @@ module TTT.Game (
   BoardState(..),
   Player(..),
   GameState(..),
+  checkBoard,
   currentPlayer,
   initBoard,
-  stepGame
+  playTurn
 ) 
 
 where
 
-data TileContents = X | O | Empty
-                    deriving (Eq)
-
+data TileContents = X | O | Empty deriving (Eq)
+data BoardState = XWin | OWin | Draw | Playable deriving (Eq)
 type Board = [TileContents] 
-data BoardState = XWin | OWin | Draw
 
 data Player = Player {
   isAI :: Bool
@@ -26,6 +25,9 @@ data GameState = GameState {
   playerOne :: Player,
   playerTwo :: Player  
 }
+
+checkBoard :: Board -> BoardState
+checkBoard b = undefined
 
 currentPlayer :: GameState -> Player
 currentPlayer gs = 
@@ -39,5 +41,5 @@ currentPlayer gs =
 initBoard:: Board
 initBoard = foldl (\acc t -> Empty : acc) [] [1..9]
  
-stepGame :: Board -> TileContents -> Int -> Board
-stepGame b = undefined
+playTurn :: Player -> GameState -> Int -> Either String GameState
+playTurn p gs i = undefined

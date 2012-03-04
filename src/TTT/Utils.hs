@@ -3,7 +3,8 @@ module TTT.Utils (
   maybeRead,
   renderBoard,
   renderPrettyBoard,
-  renderTile
+  renderTile,
+  renderWinner
 ) 
 
 where
@@ -52,4 +53,7 @@ renderTile c =
     X     -> "X"
     O     -> "O"
     Empty -> "-"
+
+renderWinner :: BoardState -> String
+renderWinner = undefined
     

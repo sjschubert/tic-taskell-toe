@@ -18,40 +18,41 @@ main = do
   putStrLn help
 
   gs <- initGame  
-  putStrLn $ renderPrettyBoard $ board gs
-  
   loop gs
 
-  where 
-    loop a = do
-        s <- interactive a
-        --check s for win state, declare winner / draw, or keep looping
-        loop s
+  where
+    nextState p gs 
+      | isAI p = return $ playFor p gs
+      | otherwise = interactive p gs
 
-interactive :: GameState -> IO GameState
-interactive gs = do 
-  let p = currentPlayer gs
-  if isAI p 
-    then do 
-      let ns = playFor p gs
-      putStrLn $ renderPrettyBoard $ board ns
-      return ns
-    else do
-      putStr "Enter index: "
-      hFlush stdout
-   
-      l <- getLine
-      let c = maybeRead l
-  
-      case c of  
-        Just i  | (\d -> d `elem` [1..9]) i -> do
-                    -- todo: stepgame using input 
-                    putStrLn $ renderPrettyBoard $ board gs
-                    return gs
-                | otherwise -> (putStrLn "Invalid choice!\n") >> return gs
-        Nothing -> if l == "q" 
-                    then (putStrLn help) >> return gs 
-                    else (putStrLn "Invalid choice!\n") >> return gs
+    loop gs = do
+        putStrLn $ renderPrettyBoard $ board gs
+        ns <- nextState (currentPlayer gs) gs
+        
+        let bs = checkBoard $ board ns
+        case bs of
+          Playable -> loop ns
+          _        -> putStrLn $ renderWinner bs         
+            
+interactive :: Player -> GameState -> IO GameState
+interactive p gs = do 
+  putStr "Enter index: "
+  hFlush stdout
+
+  l <- getLine
+  let c = maybeRead l
+
+  case c of  
+    Just i 
+      | (\d -> d `elem` [1..9]) i -> do
+          either 
+            (\s -> putStrLn s >> return gs)
+            (\ns -> return ns)
+            (playTurn p gs i)  
+      | otherwise -> (putStrLn "Invalid choice!\n") >> return gs
+    Nothing -> if l == "q" 
+                then (putStrLn help) >> return gs 
+                else (putStrLn "Invalid choice!\n") >> return gs
     
 initGame :: IO GameState
 initGame = do 
