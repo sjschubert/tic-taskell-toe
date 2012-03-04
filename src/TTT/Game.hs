@@ -30,13 +30,13 @@ data GameState = GameState {
 }
 
 checkDim :: Tile -> Board -> [Int] -> Bool
-checkDim t b xs = all id $ map (\i -> (b !! i) == t) xs 
+checkDim t b xs = all id (map (\i -> (b !! i) == t) xs) 
 
 checkBoard :: Board -> BoardState
 checkBoard b
-  | any id $ map (\i -> (b !! i) == Empty) [0..8]   = Playable
   | any id $ map (\xs -> checkDim X b xs) winStates = XWon
   | any id $ map (\xs -> checkDim O b xs) winStates = OWon
+  | any id $ map (\i -> (b !! i) == Empty) [0..8]   = Playable
   | otherwise                                       = Draw
 
 currentPlayer :: GameState -> Player
@@ -68,6 +68,6 @@ updateBoard i e (t:ts)
    | otherwise = t : updateBoard (i-1) e ts
 
 --indexes of win conditions
-winStates = [[0,1,2], [3,4,5], [6,7,8], 
-             [0,3,6], [1,4,7], [2,5,8],
-             [0,4,8], [2,4,6]]
+winStates = [[0,1,2], [3,4,5], [6,7,8], --rows 
+             [0,3,6], [1,4,7], [2,5,8], --columns
+             [0,4,8], [2,4,6]]          --diagonals

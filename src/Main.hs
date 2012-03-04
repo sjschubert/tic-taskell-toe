@@ -36,7 +36,7 @@ main = do
             
 interactive :: Player -> GameState -> IO GameState
 interactive p gs = do 
-  putStr $ "Enter index" ++ (renderPlayer p) ++ ": "
+  putStr $ promptPlayer p
   hFlush stdout
 
   l <- getLine
@@ -61,7 +61,7 @@ initGame = do
   putStrLn "  2) Player vs. AI"
   putStrLn "  3) AI vs. Player"
   
-  putStr "Enter choice: "
+  putStr "\n  Choose configuration: "
   hFlush stdout
 
   c <- getLine 

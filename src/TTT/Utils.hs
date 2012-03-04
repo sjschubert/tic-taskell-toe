@@ -1,8 +1,8 @@
 module TTT.Utils (
   help,
   maybeRead,
+  promptPlayer,
   renderBoard,
-  renderPlayer,
   renderPrettyBoard,
   renderTile,
   renderWinner
@@ -35,15 +35,15 @@ maybeRead s = case reads s of
   [(x, "")] -> Just x
   _         -> Nothing
 
+promptPlayer :: Player -> String
+promptPlayer p = "Enter index(Player " ++ show (playerId p) ++ "): "
+
 renderBoard :: Board -> String
 renderBoard b = 
     intercalate "\n_____|_____|_____\n" $ 
       map (intercalate "|") $
       splitEvery 3 $ 
       map (\x -> "  " ++ (renderTile x) ++ "  ") b
-
-renderPlayer :: Player -> String
-renderPlayer p = "(Player " ++ show (playerId p) ++ ")"
 
 renderPrettyBoard :: Board -> String
 renderPrettyBoard b = "\n **Board State**\n\n" ++ (renderBoard b) ++ "\n"
