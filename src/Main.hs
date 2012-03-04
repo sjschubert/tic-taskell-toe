@@ -32,7 +32,7 @@ main = do
         let bs = checkBoard $ board ns
         case bs of
           Playable -> loop ns
-          _        -> putStrLn $ renderWinner bs         
+          _        -> (putStrLn $ renderWinner bs) >> exitSuccess        
             
 interactive :: Player -> GameState -> IO GameState
 interactive p gs = do 

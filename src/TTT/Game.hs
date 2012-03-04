@@ -1,5 +1,5 @@
 module TTT.Game (
-  TileContents(..),
+  Tile(..),
   Board(..),
   BoardState(..),
   Player(..),
@@ -12,9 +12,11 @@ module TTT.Game (
 
 where
 
-data TileContents = X | O | Empty deriving (Eq)
-data BoardState = XWin | OWin | Draw | Playable deriving (Eq)
-type Board = [TileContents] 
+import Data.List
+
+data Tile = X | O | Empty deriving (Eq)
+data BoardState = XWon | OWon | Draw | Playable deriving (Eq)
+type Board = [Tile] 
 
 data Player = Player {
   isAI :: Bool
@@ -26,8 +28,15 @@ data GameState = GameState {
   playerTwo :: Player  
 }
 
+checkDim :: Tile -> Board -> [Int] -> Bool
+checkDim t b xs = all id $ map (\i -> (b !! i) == t) xs 
+
 checkBoard :: Board -> BoardState
-checkBoard b = undefined
+checkBoard b
+  | any id $ map (\i -> (b !! i) == Empty) [0..8]   = Playable
+  | any id $ map (\xs -> checkDim X b xs) winStates = XWon
+  | any id $ map (\xs -> checkDim O b xs) winStates = OWon
+  | otherwise                                       = Draw
 
 currentPlayer :: GameState -> Player
 currentPlayer gs = 
@@ -43,3 +52,8 @@ initBoard = foldl (\acc t -> Empty : acc) [] [1..9]
  
 playTurn :: Player -> GameState -> Int -> Either String GameState
 playTurn p gs i = undefined
+
+--indexes of win conditions
+winStates = [[0,1,2], [3,4,5], [6,7,8], 
+             [0,3,6], [1,4,7], [2,5,8],
+             [0,4,8], [2,4,6]]

@@ -34,9 +34,6 @@ maybeRead s = case reads s of
   [(x, "")] -> Just x
   _         -> Nothing
 
---maybeRead :: Read a => String -> Maybe a
---maybeRead = fmap fst . listToMaybe . filter (null . dropWhile isSpace . snd) . reads
-
 renderBoard :: Board -> String
 renderBoard b = 
     intercalate "\n_____|_____|_____\n" $ 
@@ -47,7 +44,7 @@ renderBoard b =
 renderPrettyBoard :: Board -> String
 renderPrettyBoard b = "\n **Board State**\n\n" ++ (renderBoard b) ++ "\n"
 
-renderTile :: TileContents -> String
+renderTile :: Tile -> String
 renderTile c = 
   case c of
     X     -> "X"
@@ -55,5 +52,9 @@ renderTile c =
     Empty -> "-"
 
 renderWinner :: BoardState -> String
-renderWinner = undefined
+renderWinner b 
+  | b == XWon     = "X has won the match."
+  | b == OWon     = "O has won the match."
+  | b == Draw     = "The match was a draw."
+  | b == Playable = "Game terminated with board in a playable state!"
     
