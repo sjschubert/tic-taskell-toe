@@ -20,10 +20,10 @@ type Board = [Tile]
 
 data Player = Player {
   isAI :: Bool
-} 
+} deriving (Eq)
 
 data GameState = GameState {
-  board :: !Board,
+  board :: Board,
   playerOne :: Player,
   playerTwo :: Player  
 }
@@ -47,11 +47,24 @@ currentPlayer gs =
     x = foldl (\acc t -> if t == X then (acc + 1) else acc) 0 $ board gs
     o = foldl (\acc t -> if t == O then (acc + 1) else acc) 0 $ board gs
 
-initBoard:: Board
+initBoard :: Board
 initBoard = foldl (\acc t -> Empty : acc) [] [1..9]
  
 playTurn :: Player -> GameState -> Int -> Either String GameState
-playTurn p gs i = undefined
+playTurn p gs i
+  | canPlay gs i = Right $ gs {board = updateBoard i (playFor gs p) (board gs)}
+  | otherwise    = Left $ "Tile " ++ (show i) ++ "is not empty"
+  where   
+    playFor gs p
+      | p == playerOne gs = X
+      | otherwise = O
+
+    canPlay gs i = ((board gs) !! i) == Empty
+
+updateBoard :: Int -> Tile -> Board -> Board
+updateBoard i e (t:ts)
+   | (i == 0)  = e : ts
+   | otherwise = t : updateBoard (i-1) e ts
 
 --indexes of win conditions
 winStates = [[0,1,2], [3,4,5], [6,7,8], 
