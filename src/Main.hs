@@ -44,11 +44,11 @@ interactive p gs = do
 
   case c of  
     Just i 
-      | (\d -> d `elem` [0..8]) i -> do
+      | (\d -> d `elem` [1..9]) i -> do
           either 
             (\s -> putStrLn ("\n" ++ s) >> return gs)
             (\ns -> return ns)
-            (playTurn p gs i)  
+            (playTurn p gs (i-1))  
       | otherwise -> (putStrLn "Invalid choice!\n") >> return gs
     Nothing -> if l == "q" 
                 then (putStrLn help) >> return gs 
