@@ -27,12 +27,12 @@ main = do
 
     loop gs = do
         putStrLn $ renderPrettyBoard $ board gs
-        ns <- nextState (currentPlayer gs) gs
+        ns <- nextState (currentPlayer gs) gs        
         
         let bs = checkBoard $ board ns
         case bs of
           Playable -> loop ns
-          _        -> (putStrLn $ renderWinner bs) >> exitSuccess        
+          _        -> (putStrLn $ renderWinner bs $ board ns) >> exitSuccess        
             
 interactive :: Player -> GameState -> IO GameState
 interactive p gs = do 
@@ -58,8 +58,8 @@ initGame :: IO GameState
 initGame = do 
   putStrLn "What game configuration would you like?"
   putStrLn "  1) Player(X) vs. Player(O)"
-  putStrLn "  2) Player vs. AI"
-  putStrLn "  3) AI vs. Player"
+  putStrLn "  2) Player(X) vs. AI(O)"
+  putStrLn "  3) AI(X) vs. Player(O)"
   
   putStr "\n  Choose configuration: "
   hFlush stdout

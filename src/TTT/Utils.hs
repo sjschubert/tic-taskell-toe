@@ -55,10 +55,10 @@ renderTile c =
     O     -> "O"
     Empty -> "-"
 
-renderWinner :: BoardState -> String
-renderWinner b 
-  | b == XWon     = "X has won the match."
-  | b == OWon     = "O has won the match."
-  | b == Draw     = "The match was a draw."
-  | b == Playable = "Game terminated with board in a playable state!"
+renderWinner :: BoardState -> Board -> String
+renderWinner bs b 
+  | bs == XWon     = "\n   ** X Wins **\n\n" ++ (renderBoard b) ++ "\n"
+  | bs == OWon     = "\n   ** O Wins **\n\n" ++ (renderBoard b) ++ "\n"
+  | bs == Draw     = "\n   ** Draw **\n\n" ++ (renderBoard b) ++ "\n"
+  | bs == Playable = "Game terminated with board in a playable state!"
     

@@ -16,7 +16,7 @@ Executable ttt
   ghc-options: 
     -O2 
     -fno-spec-constr-count 
-    -optl-Wl,--enable-stdcall-fixup
+    -optl-Wl,-read_only_relocs,suppress
   build-depends:
     base >= 4,
     split
